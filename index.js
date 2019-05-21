@@ -5,7 +5,11 @@ const colors = require('./colors')
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 const TOKEN_PATH = 'token.json'
 
-const main = () => {
+var blueEvents = []
+var redEvents = []
+var greenEvents = []
+
+const main = async () => {
   // Load client secrets from a local file.
   fs.readFile('credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err)
@@ -82,16 +86,11 @@ async function listEvents(auth) {
         })
         const events = res.data.items
         if (events.length) {
-            var blueEvents = []
-            var redEvents = []
-            var greenEvents = []
-
             events.map((event) => {
               if (event.colorId === colors.blue) blueEvents.push(event)
               else if (event.colorId === colors.red) redEvents.push(event)
               else if (event.colorId === colors.green) greenEvents.push(event)
               })
-
             console.log("blue events: " + blueEvents.length)
             console.log("red events: " + redEvents.length)
             console.log("green events: " + greenEvents.length)
