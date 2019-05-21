@@ -2,11 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 const colors = require('./colors')
-// If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
 const TOKEN_PATH = 'token.json'
 
 const main = () => {
@@ -15,7 +11,7 @@ const main = () => {
     if (err) return console.log('Error loading client secret file:', err)
     // Authorize a client with credentials, then call the Google Calendar API.
     authorize(JSON.parse(content), listEvents)
-  });
+  })
 }
 main()
 
@@ -36,7 +32,7 @@ function authorize(credentials, callback) {
     if (err) return getAccessToken(oAuth2Client, callback)
     oAuth2Client.setCredentials(JSON.parse(token))
     callback(oAuth2Client)
-  });
+  })
 }
 
 /**
@@ -86,13 +82,20 @@ async function listEvents(auth) {
         })
         const events = res.data.items
         if (events.length) {
-            events.map((event, i) => {
-                const start = event.start.dateTime || event.start.date
-                console.log(`${start} - ${event.colorId}`)
-              });
-        }
-        console.log(colors.red);
-                
+            var blueEvents = []
+            var redEvents = []
+            var greenEvents = []
+
+            events.map((event) => {
+              if (event.colorId === colors.blue) blueEvents.push(event)
+              else if (event.colorId === colors.red) redEvents.push(event)
+              else if (event.colorId === colors.green) greenEvents.push(event)
+              })
+
+            console.log("blue events: " + blueEvents.length)
+            console.log("red events: " + redEvents.length)
+            console.log("green events: " + greenEvents.length)
+        }            
     }
     catch (err) {
         console.log(err)
